@@ -1,10 +1,7 @@
 package com.xm.model.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,18 +11,16 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
-@Table(indexes = {
-        @Index(name = "idx_timestamp", columnList = "timestamp")
-})
+@Table(name = "crypto_metrics")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CryptoPriceEntity {
+public class CryptoMetricsEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String cryptocurrency;
-    private Long timestamp;
-    private BigDecimal price;
+    private Long oldestTimestamp;
+    private Long newestTimestamp;
+    private BigDecimal minPrice;
+    private BigDecimal maxPrice;
 }

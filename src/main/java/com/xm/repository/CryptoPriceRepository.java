@@ -8,4 +8,6 @@ import java.util.List;
 public interface CryptoPriceRepository extends JpaRepository<CryptoPriceEntity, Long> {
 
     List<CryptoPriceEntity> findByCryptocurrency(String cryptocurrency);
+
+    List<CryptoPriceEntity> findByTimestampBetween(Long startTimestamp, Long endTimestamp);
 }
