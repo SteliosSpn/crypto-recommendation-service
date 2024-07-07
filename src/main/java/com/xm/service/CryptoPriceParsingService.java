@@ -58,7 +58,7 @@ public class CryptoPriceParsingService {
             return false;
         }
         if (!NumberUtils.isParsable(cryptoEntry[2])
-                || new BigDecimal(cryptoEntry[2]).compareTo(BigDecimal.ZERO) < 0) {
+                || new BigDecimal(cryptoEntry[2]).compareTo(BigDecimal.ZERO) <= 0) {
             return false;
         }
 
@@ -105,8 +105,8 @@ public class CryptoPriceParsingService {
             return optionalMetrics.get();
         }
 
-        CryptoPriceEntity firstPriceEntity = prices.get(0);
-        prices.remove(0);
+        CryptoPriceEntity firstPriceEntity = prices.getFirst();
+        prices.removeFirst();
         return CryptoMetricsEntity.builder()
                 .cryptocurrency(crypto)
                 .oldestTimestamp(firstPriceEntity.getTimestamp())

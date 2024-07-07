@@ -15,8 +15,8 @@ public class CustomExceptionHandler {
     @ExceptionHandler
     public final ResponseEntity<ErrorDto> handleUnsupportedCryptoException(UnsupportedCryptoException ex) {
         ErrorDto error = ErrorDto.builder()
-                .code(ErrorCode.UNSUPPORTED_CRYPTO_EXCEPTION.getCode())
-                .message(ErrorCode.UNSUPPORTED_CRYPTO_EXCEPTION.getMessage())
+                .code(ErrorCode.UNSUPPORTED_CRYPTO.getCode())
+                .message(ErrorCode.UNSUPPORTED_CRYPTO.getMessage())
                 .details(List.of(ex.getLocalizedMessage()))
                 .build();
 
@@ -25,10 +25,23 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler
+    public final ResponseEntity<ErrorDto> handleProvidedCryptoMetricsNotFoundException(
+            ProvidedCryptoMetricsNotFoundException ex) {
+        ErrorDto error = ErrorDto.builder()
+                .code(ErrorCode.PROVIDED_CRYPTO_METRICS_NOT_FOUND.getCode())
+                .message(ErrorCode.PROVIDED_CRYPTO_METRICS_NOT_FOUND.getMessage())
+                .details(List.of(ex.getLocalizedMessage()))
+                .build();
+
+        log.warn(error.getMessage() + " " + error.getDetails());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
     public final ResponseEntity<ErrorDto> handleCryptoMetricsNotFoundException(CryptoMetricsNotFoundException ex) {
         ErrorDto error = ErrorDto.builder()
-                .code(ErrorCode.CRYPTO_METRICS_NOT_FOUND_EXCEPTION.getCode())
-                .message(ErrorCode.CRYPTO_METRICS_NOT_FOUND_EXCEPTION.getMessage())
+                .code(ErrorCode.CRYPTO_METRICS_NOT_FOUND.getCode())
+                .message(ErrorCode.CRYPTO_METRICS_NOT_FOUND.getMessage())
                 .details(List.of(ex.getLocalizedMessage()))
                 .build();
 

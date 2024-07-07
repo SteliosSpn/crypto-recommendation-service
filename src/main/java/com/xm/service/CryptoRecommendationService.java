@@ -2,6 +2,7 @@ package com.xm.service;
 
 import com.xm.config.SupportedCryptocurrenciesConfig;
 import com.xm.exception.CryptoMetricsNotFoundException;
+import com.xm.exception.ProvidedCryptoMetricsNotFoundException;
 import com.xm.exception.UnsupportedCryptoException;
 import com.xm.model.dto.CryptoMetricsDto;
 import com.xm.model.entity.CryptoMetricsEntity;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,9 +34,30 @@ public class CryptoRecommendationService {
         Optional<CryptoMetricsEntity> cryptoMetricsEntityOptional = cryptoMetricsRepository.findById(cryptoId);
 
         if (cryptoMetricsEntityOptional.isEmpty()) {
-            throw new CryptoMetricsNotFoundException("Metrics not found for crypto " + cryptoId);
+            throw new ProvidedCryptoMetricsNotFoundException("Metrics not found for crypto " + cryptoId);
         }
 
         return modelMapper.map(cryptoMetricsEntityOptional.get(), CryptoMetricsDto.class);
+    }
+
+    public List<CryptoMetricsDto> getCryptoMetricsByDescendingNormalizedRange() {
+
+        List<CryptoMetricsEntity> cryptoMetricsEntityList = cryptoMetricsRepository.findAll();
+        if (cryptoMetricsEntityList.isEmpty()) {
+            throw new CryptoMetricsNotFoundException("Crypto metrics not found in the database");
+        }
+        return cryptoMetricsEntityList.stream()
+                .map(metricsEntity -> modelMapper.map(metricsEntity, CryptoMetricsDto.class))
+                .map(this::getNormalizedRange)
+                .sorted((c1, c2) -> c2.getNormalizedRange().compareTo(c1.getNormalizedRange()))
+                .toList();
+    }
+
+    private CryptoMetricsDto getNormalizedRange(CryptoMetricsDto metrics) {
+        BigDecimal normalizedRange = metrics.getMaxPrice()
+                .subtract(metrics.getMinPrice())
+                .divide(metrics.getMinPrice(), 2, RoundingMode.HALF_UP);
+        metrics.setNormalizedRange(normalizedRange);
+        return metrics;
     }
 }

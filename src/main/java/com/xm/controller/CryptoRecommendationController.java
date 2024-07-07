@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/v1/crypto/recommendations", produces = "application/json")
 @RequiredArgsConstructor
@@ -21,5 +23,11 @@ public class CryptoRecommendationController {
             @PathVariable String cryptoId) {
 
         return ResponseEntity.ok(cryptoRecommendationService.getCryptocurrencyMetrics(cryptoId));
+    }
+
+    @GetMapping(path = "/metrics/normalizedRange/desc")
+    public ResponseEntity<List<CryptoMetricsDto>> getCryptoMetrics() {
+
+        return ResponseEntity.ok(cryptoRecommendationService.getCryptoMetricsByDescendingNormalizedRange());
     }
 }
