@@ -26,8 +26,15 @@ public class CryptoRecommendationController {
     }
 
     @GetMapping(path = "/metrics/normalizedRange/desc")
-    public ResponseEntity<List<CryptoMetricsDto>> getCryptoMetrics() {
+    public ResponseEntity<List<CryptoMetricsDto>> getCryptoMetricsByDescendingNormalizedRange() {
 
         return ResponseEntity.ok(cryptoRecommendationService.getCryptoMetricsByDescendingNormalizedRange());
+    }
+
+    @GetMapping(path = "/metrics/highestNormalizedRange/date/{date}")
+    public ResponseEntity<CryptoMetricsDto> getHighestNormalizedRangeByDate(
+            @PathVariable String date) {
+
+        return ResponseEntity.ok(cryptoRecommendationService.getHighestNormalizedRangeByDate(date));
     }
 }

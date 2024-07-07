@@ -20,7 +20,7 @@ public class CustomExceptionHandler {
                 .details(List.of(ex.getLocalizedMessage()))
                 .build();
 
-        log.warn(error.getMessage() + " " + error.getDetails());
+        log.warn("{} {}", error.getMessage(), error.getDetails());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -33,7 +33,7 @@ public class CustomExceptionHandler {
                 .details(List.of(ex.getLocalizedMessage()))
                 .build();
 
-        log.warn(error.getMessage() + " " + error.getDetails());
+        log.warn("{} {}", error.getMessage(), error.getDetails());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
@@ -45,7 +45,32 @@ public class CustomExceptionHandler {
                 .details(List.of(ex.getLocalizedMessage()))
                 .build();
 
-        log.warn(error.getMessage() + " " + error.getDetails());
+        log.warn("{} {}", error.getMessage(), error.getDetails());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<ErrorDto> handleDateWithoutNormalizedRangeException(
+            DateWithoutNormalizedRangeException ex) {
+        ErrorDto error = ErrorDto.builder()
+                .code(ErrorCode.DATE_WITHOUT_NORMALIZED_RANGE_ENTRIES.getCode())
+                .message(ErrorCode.DATE_WITHOUT_NORMALIZED_RANGE_ENTRIES.getMessage())
+                .details(List.of(ex.getLocalizedMessage()))
+                .build();
+
+        log.warn("{} {}", error.getMessage(), error.getDetails());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<ErrorDto> handleInvalidDateFormatException(InvalidDateFormatException ex) {
+        ErrorDto error = ErrorDto.builder()
+                .code(ErrorCode.INVALID_DATE_FORMAT.getCode())
+                .message(ErrorCode.INVALID_DATE_FORMAT.getMessage())
+                .details(List.of(ex.getLocalizedMessage()))
+                .build();
+
+        log.warn("{} {}", error.getMessage(), error.getDetails());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
