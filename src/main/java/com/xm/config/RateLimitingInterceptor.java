@@ -43,7 +43,10 @@ public class RateLimitingInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler) throws Exception {
         String ipAddress = request.getRemoteAddr();
         Bucket bucket = buckets.computeIfAbsent(ipAddress, this::createNewBucket);
 

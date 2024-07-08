@@ -12,6 +12,7 @@ import com.xm.repository.CryptoPriceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ public class CryptoPriceParsingService {
     private final SupportedCryptocurrenciesConfig supportedCryptocurrenciesConfig;
     private final CryptoPriceRepository cryptoPriceRepository;
     private final CryptoMetricsRepository cryptoMetricsRepository;
+    private final CacheManager cacheManager;
 
     public void processCsvContent(String csvContent) {
         try (CSVReader reader = new CSVReader(new StringReader(csvContent))) {
@@ -42,6 +45,7 @@ public class CryptoPriceParsingService {
             cryptoPriceRepository.saveAll(entities);
 
             calculateAndUpdateMetrics(entities);
+            evictCacheEntries(entities);
         } catch (IOException | CsvException e) {
             e.printStackTrace();
         }
@@ -138,4 +142,12 @@ public class CryptoPriceParsingService {
         }
     }
 
+    private void evictCacheEntries(List<CryptoPriceEntity> entities) {
+        entities.stream()
+                .map(CryptoPriceEntity::getCryptocurrency)
+                .distinct()
+                .forEach(crypto -> {
+                    Objects.requireNonNull(cacheManager.getCache("cryptoMetricsCache")).evict(crypto);
+                });
+    }
 }

@@ -1,8 +1,10 @@
 package com.xm.config;
 
 import com.hazelcast.config.Config;
+import com.hazelcast.config.EvictionConfig;
 import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.MaxSizePolicy;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
@@ -24,6 +26,12 @@ public class HazelcastConfig {
         joinConfig.getMulticastConfig().setEnabled(false);
         joinConfig.getTcpIpConfig().setEnabled(false);
         config.addMapConfig(new MapConfig("hazelcast-buckets"));
+        config.addMapConfig(new MapConfig("cryptoMetricsCache")
+                .setTimeToLiveSeconds(36000)
+                .setEvictionConfig(
+                        new EvictionConfig()
+                                .setMaxSizePolicy(MaxSizePolicy.USED_HEAP_SIZE)
+                                .setSize(50)));
         return config;
     }
 
