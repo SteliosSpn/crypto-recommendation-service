@@ -119,6 +119,54 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.github.kongchen</groupId>
+				<artifactId>swagger-maven-plugin</artifactId>
+				<version>3.1.8</version>
+				<dependencies>
+					<dependency>
+						<groupId>javax.xml.bind</groupId>
+						<artifactId>jaxb-api</artifactId>
+						<version>2.3.1</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<apiSources>
+						<apiSource>
+							<basePath>/</basePath>
+							<host>localhost</host>
+							<info>
+								<title>Cryptocurrency Recommendation Api</title>
+								<version>v0.1</version>
+							</info>
+							<locations>
+								<location>
+									com.xm.controller.CryptoRecommendationController
+								</location>
+							</locations>
+							<outputFormats>json,yaml</outputFormats>
+							<schemes>
+								<scheme>http</scheme>
+								<scheme>https</scheme>
+							</schemes>
+							<springmvc>true</springmvc>
+							<swaggerApiReader>com.github.kongchen.swagger.docgen.reader.SpringMvcApiReader
+							</swaggerApiReader>
+							<swaggerDirectory>${basedir}/generated</swaggerDirectory>
+						</apiSource>
+					</apiSources>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>compile</phase>
+					</execution>
+				</executions>
+
+
+			</plugin>
 		</plugins>
 	</build>
 
