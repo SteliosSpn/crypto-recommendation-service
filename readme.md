@@ -147,23 +147,23 @@ done
 
 ### Things to consider - Answers
 
-- Initially the cryptos are only five, but what if we want to include more? Will the
-  recommendation service be able to scale? <br/><br/>
+- **Initially the cryptos are only five, but what if we want to include more? Will the
+  recommendation service be able to scale?** <br/><br/>
 
   Sure. If a new CSV file is detected in the specified path in the application.properties, it is going to be parsed.
   If the entries are of the correct format and the cryptocurrencies are supported, the values will be persisted 
   to the database, the metrics will be updated, and the relevant metrics will be evicted from the in-memory cache.
   <br/><br/>
 
-- New cryptos pop up every day, so we might need to safeguard recommendations service endpoints from not currently 
-  supported cryptos <br/><br/>
+- **New cryptos pop up every day, so we might need to safeguard recommendations service endpoints from not currently 
+  supported cryptos** <br/><br/>
 
   The endpoint where the user may input a cryptocurrency to retrieve its metrics is protected by a validation. If the 
   client requests metrics for an unsupported cryptocurrency, a `400 Bad Request` error is going to be returned.
   <br/><br/>
 
-- For some cryptos it might be safe to invest, by just checking only one month's time frame. However, for some of them
-  it might be more accurate to check six months or even a year. Will the recommendation service be able to handle this?
+- **For some cryptos it might be safe to invest, by just checking only one month's time frame. However, for some of them
+  it might be more accurate to check six months or even a year. Will the recommendation service be able to handle this?**
   <br/><br/>
 
   Yes, the recommendation service will be able to handle this. Older entries may be persisted in the database by adding
