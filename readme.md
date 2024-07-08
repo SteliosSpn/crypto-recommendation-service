@@ -2,6 +2,21 @@
 
 This project provides a REST API for cryptocurrency recommendations, calculating various metrics based on cryptocurrency prices, and rate-limiting access to the endpoints.
 
+## Tech Stack
+
+- **Java 21**
+- **Spring Boot**
+- **Spring Data JPA**
+- **H2 Database**: In-memory database used to store the cryptocurrency data.
+- **Hazelcast**: Distributed in-memory data grid for caching. Used to store rate limiting data and jpa query results.
+- **Bucket4j**: Java rate-limiting library integrated with Hazelcast.
+- **Spring Integration**: For integration flows and file processing.
+- **OpenCSV**
+- **Lombok**
+- **ModelMapper**
+- **Maven**
+- **Docker**
+
 ### Running with Docker
 1. **Build the Docker Image:**
    ```sh
@@ -130,18 +145,29 @@ done
   1..11 | ForEach-Object { curl "http://localhost:8080/api/v1/crypto/recommendations/metrics/BTC"; Start-Sleep -Seconds 1 }
 ```
 
-## Tech Stack
+### Things to consider - Answers
 
-- **Spring Boot**
-- **Spring Data JPA**
-- **H2 Database**: In-memory database used to store the cryptocurrency data.
-- **Hazelcast**: Distributed in-memory data grid for caching. Used to store rate limiting data and jpa query results.
-- **Bucket4j**: Java rate-limiting library integrated with Hazelcast.
-- **Spring Integration**: For integration flows and file processing.
-- **OpenCSV**
-- **Lombok**
-- **ModelMapper**
-- **Maven**
-- **Docker**
+- Initially the cryptos are only five, but what if we want to include more? Will the
+  recommendation service be able to scale? <br/><br/>
+
+  Sure. If a new CSV file is detected in the specified path in the application.properties, it is going to be parsed.
+  If the entries are of the correct format and the cryptocurrencies are supported, the values will be persisted 
+  to the database, the metrics will be updated, and the relevant metrics will be evicted from the in-memory cache.
+  <br/><br/>
+
+- New cryptos pop up every day, so we might need to safeguard recommendations service endpoints from not currently 
+  supported cryptos <br/><br/>
+
+  The endpoint where the user may input a cryptocurrency to retrieve its metrics is protected by a validation. If the 
+  client requests metrics for an unsupported cryptocurrency, a `400 Bad Request` error is going to be returned.
+  <br/><br/>
+
+- For some cryptos it might be safe to invest, by just checking only one month's time frame. However, for some of them
+  it might be more accurate to check six months or even a year. Will the recommendation service be able to handle this?
+  <br/><br/>
+
+  Yes, the recommendation service will be able to handle this. Older entries may be persisted in the database by adding
+  the respective data through one or more csv files to the directory of the Spring Integration listener.
+
 
 
